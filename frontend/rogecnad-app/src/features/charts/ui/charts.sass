@@ -1,0 +1,21 @@
+.charts_container
+  background-color: #171717
+  border-radius: 100px
+  padding: 20px 70px
+  margin-top: 30px
+
+.charts_track-list
+  padding: 20px 50px
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+  max-height: 500px
+  overflow: hidden
+
+.charts_track-list > *
+  flex-basis: calc(50% - 100px)
+  margin: 10px
+
+@media screen and (max-width: 768px)
+  .charts_track-list > *
+    flex-basis: calc(100% - 100px)
