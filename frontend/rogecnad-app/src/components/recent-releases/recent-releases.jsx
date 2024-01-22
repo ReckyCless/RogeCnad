@@ -2,6 +2,7 @@ import { Divider, Typography } from '@mui/material';
 import './recent-releases.sass';
 import AlbumPreview from '../album/album-preview/album-preview.jsx';
 import { useGetRecentReleasesAlbumsQuery } from '../../store/actions/music/music.js';
+import CircularProgress from "@mui/material/CircularProgress";
 
 const mockData = [
 	{
@@ -73,8 +74,9 @@ function RecentReleases() {
 				/>
 			</div>
 			<div className='recent-releases_list'>
-				{!isLoading &&
-					data.playlistsList.map((data) => (
+				{isLoading ? <CircularProgress /> : ''}
+				{error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
+				{data && data.playlistsList.map((data) => (
 						<AlbumPreview
 							key={data.id}
 							image={data.coverImage}

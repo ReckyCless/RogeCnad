@@ -3,6 +3,7 @@ import './charts.sass';
 import TrackCard from '../track/track-card/track-card.jsx';
 import { useDispatch } from 'react-redux';
 import { useGetChartsListQuery } from '../../store/actions/music/music.js';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const mockData = [
 	{
@@ -96,8 +97,11 @@ function Charts() {
 				}}
 			/>
 			<div className='charts_track-list'>
-				{!isLoading &&
-					data.trackList.map((track, index) => (
+				<div style={{display:'flex', justifyContent:'center'}}>
+					{isLoading ? <CircularProgress /> : ''}
+					{error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
+				</div>
+				{data && data.trackList.map((track, index) => (
 						<TrackCard
 							id={index + 1}
 							action='default'
