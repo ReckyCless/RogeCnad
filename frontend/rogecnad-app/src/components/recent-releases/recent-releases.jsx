@@ -75,17 +75,17 @@ function RecentReleases() {
 			</div>
 			<div className='recent-releases_list'>
 				{isLoading ? <CircularProgress /> : ''}
-				{error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
+				{!isLoading && error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
 				{data && data.playlistsList.map((data) => (
-						<AlbumPreview
-							key={data.id}
-							image={data.coverImage}
-							title={data.playlistName}
-							author={data.creatorName}
-							fullTime={data.fullTime || '0:00'}
-							albumId={data.id}
-						/>
-					))}
+					<AlbumPreview
+						key={data.id}
+						image={data.coverImage}
+						title={data.playlistName}
+						author={data.creatorName}
+						fullTime={data.fullTime || '0:00'}
+						albumId={data.id}
+					/>
+				))}
 			</div>
 		</div>
 	);

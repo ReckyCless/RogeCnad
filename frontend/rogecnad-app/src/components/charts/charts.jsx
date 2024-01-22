@@ -99,20 +99,20 @@ function Charts() {
 			<div className='charts_track-list'>
 				<div style={{display:'flex', justifyContent:'center'}}>
 					{isLoading ? <CircularProgress /> : ''}
-					{error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
+					{!isLoading && error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
 				</div>
 				{data && data.trackList.map((track, index) => (
-						<TrackCard
-							id={index + 1}
-							action='default'
-							author={track.uploaderName}
-							time={track.duration}
-							image={track.trackCoverBytes}
-							title={track.trackName}
-							src={track.fishingLink}
-							key={track.id}
-						/>
-					))}
+					<TrackCard
+						id={index + 1}
+						action='default'
+						author={track.uploaderName}
+						time={track.duration}
+						image={track.trackCoverBytes}
+						title={track.trackName}
+						src={track.fishingLink}
+						key={track.id}
+					/>
+				))}
 			</div>
 		</div>
 	);
