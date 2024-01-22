@@ -97,7 +97,7 @@ function Charts() {
 				}}
 			/>
 			<div className='charts_track-list'>
-				<div style={{display:'flex', justifyContent:'center'}}>
+				<div style={{display: !data ? 'flex': 'none', justifyContent:'center'}}>
 					{isLoading ? <CircularProgress /> : ''}
 					{!isLoading && error ? <Typography variant='body1' sx={{color: 'red'}}>Ошибка соединения с сервером. Попробуйте позже :c</Typography> : ''}
 				</div>
