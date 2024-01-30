@@ -12,10 +12,12 @@ import PauseIcon from '@mui/icons-material/Pause';
 import { useEffect, useState } from 'react';
 import {
 	setCurrentTrack,
+	setLike,
 	setPlaying,
 } from '../../store/reducers/audio/audio.slice.js';
 import secondsToMMSS from '../../utils/secondsToMMSS.js';
 import { audio } from '../../constants.js';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 const TRACK_BTN = {
 	NEXT: 'NEXT',
@@ -25,7 +27,7 @@ const TRACK_BTN = {
 function Player() {
 	const audioData = useSelector((store) => store.audio);
 	const dispatch = useDispatch();
-	const { isPlaying, currentTrack, nextTrack, prevTrack } = audioData;
+	const { isPlaying, currentTrack, nextTrack, prevTrack, like } = audioData;
 	const [volume, setVolume] = useState(50);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [repeat, setRepeat] = useState(false);
@@ -34,9 +36,10 @@ function Player() {
 	const sliderCurrentTime = Math.round(
 		(currentTime / currentTrack.time) * 100
 	);
-	const likesArr = localStorage.getItem('likes');
-	const isLikedLS = likesArr.includes(currentTrack.id);
-	const [isLiked, setIsLiked] = useState(isLikedLS);
+	const [likesArr, setLikesArr] = useState([]);
+	const [isLiked, setIsLiked] = useState(false);
+	const auth = useSelector((store) => store.auth);
+	const { isLoggined } = auth;
 
 	useEffect(() => {
 		if (currentTrack.id && currentTrack.src !== audio.src) {
@@ -45,6 +48,14 @@ function Player() {
 			audio.play();
 		}
 	}, [currentTrack.id]);
+
+	useEffect(() => {
+		const wtf = localStorage.getItem('likes');
+		const likesArr = JSON.parse(wtf);
+		setLikesArr(likesArr);
+		const isLikedLS = likesArr.includes(currentTrack.id);
+		setIsLiked(isLikedLS);
+	}, [like, currentTrack]);
 
 	useEffect(() => {
 		if (!isPlaying) {
@@ -101,6 +112,23 @@ function Player() {
 
 	const handleChangeRepeat = () => {
 		setRepeat(!repeat);
+	};
+
+	const handleLike = () => {
+		setIsLiked(!isLiked);
+		dispatch(setLike(!isLiked));
+		if (!isLiked) {
+			const updatedLikeArr = [...likesArr, currentTrack.id];
+			localStorage.setItem('likes', JSON.stringify(updatedLikeArr));
+		}
+
+		if (isLiked) {
+			const updatedLikeArr = likesArr.filter(
+				(trackId) => trackId !== currentTrack.id
+			);
+
+			localStorage.setItem('likes', JSON.stringify(updatedLikeArr));
+		}
 	};
 
 	const handleNextPrevTrack = (trackBtn) => {
@@ -191,6 +219,8 @@ function Player() {
 					>
 						<IconButton
 							size='small'
+							onClick={handleLike}
+							disabled={!isLoggined}
 							sx={{
 								top: '-5px',
 								position: 'absolute',
@@ -199,9 +229,16 @@ function Player() {
 								'&:hover': {
 									backgroundColor: 'rgb(43,43,43)',
 								},
+								'&:disabled': {
+									color: '#3d282f',
+								},
 							}}
 						>
-							<FavoriteIcon fontSize='large' />
+							{isLiked && isLoggined ? (
+								<FavoriteIcon fontSize='large' />
+							) : (
+								<FavoriteBorderIcon fontSize='large' />
+							)}
 						</IconButton>
 					</Box>
 				</div>
@@ -236,6 +273,7 @@ function Player() {
 								step={1}
 								min={0}
 								max={100}
+								value={volume}
 								aria-label='Default'
 								valueLabelDisplay='auto'
 								onChange={handleChangeValue}

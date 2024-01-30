@@ -1,3 +1,5 @@
 export const audio = new Audio(null);
 
-localStorage.setItem('likes', []);
+if (!localStorage.getItem('likes')) {
+	localStorage.setItem('likes', JSON.stringify([]));
+}

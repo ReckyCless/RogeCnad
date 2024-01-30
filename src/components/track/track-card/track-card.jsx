@@ -12,10 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import PauseIcon from '@mui/icons-material/Pause';
 import {
 	setCurrentTrack,
+	setLike,
 	setNextTrack,
 	setPlaying,
 	setPrevTrack,
 } from '../../../store/reducers/audio/audio.slice.js';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function TrackCard({
 	id,
@@ -33,7 +35,37 @@ function TrackCard({
 	const [isShown, setIsShown] = useState(false);
 	const formattedDuration = secondsToMMSS(time);
 	const audioData = useSelector((store) => store.audio);
-	const { currentTrack, isPlaying } = audioData;
+	const { currentTrack, isPlaying, like } = audioData;
+	const [likesArr, setLikesArr] = useState([]);
+	const [isLiked, setIsLiked] = useState(false);
+	const auth = useSelector((store) => store.auth);
+	const { isLoggined } = auth;
+
+	useEffect(() => {
+		const wtf = localStorage.getItem('likes');
+		const likesArr = JSON.parse(wtf);
+		setLikesArr(likesArr);
+		const isLikedLS = likesArr.includes(trackId);
+		setIsLiked(isLikedLS);
+		dispatch(setLike(null));
+	}, [like]);
+
+	const handleLike = () => {
+		setIsLiked(!isLiked);
+		dispatch(setLike(!isLiked));
+		if (!isLiked) {
+			const updatedLikeArr = [...likesArr, trackId];
+			localStorage.setItem('likes', JSON.stringify(updatedLikeArr));
+		}
+
+		if (isLiked) {
+			const updatedLikeArr = likesArr.filter(
+				(trackId) => trackId !== trackId
+			);
+
+			localStorage.setItem('likes', JSON.stringify(updatedLikeArr));
+		}
+	};
 
 	const handleToggleAudio = (track) => {
 		if (currentTrack.id !== trackId) {
@@ -201,6 +233,8 @@ function TrackCard({
 					{isShown ? (
 						<IconButton
 							size='small'
+							onClick={handleLike}
+							disabled={!isLoggined}
 							sx={{
 								position: 'absolute',
 								top: '-10px',
@@ -210,9 +244,16 @@ function TrackCard({
 								'&:hover': {
 									backgroundColor: '#2B2B2B',
 								},
+								'&:disabled': {
+									color: '#3d282f',
+								},
 							}}
 						>
-							<FavoriteBorderIcon fontSize='large' />
+							{isLiked && isLoggined ? (
+								<FavoriteIcon fontSize='large' />
+							) : (
+								<FavoriteBorderIcon fontSize='large' />
+							)}
 						</IconButton>
 					) : null}
 				</div>

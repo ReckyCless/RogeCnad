@@ -14,6 +14,7 @@ const audioSlice = createSlice({
 			time: null,
 		},
 		isPlaying: false,
+		like: null,
 	},
 	reducers: {
 		setCurrentTrack: (state, action) => {
@@ -30,12 +31,20 @@ const audioSlice = createSlice({
 			state.prevTrack = action.payload;
 			state.isPlaying = true;
 		},
+		setLike: (state, action) => {
+			state.like = action.payload;
+		},
 	},
 });
 
 const { actions, reducer } = audioSlice;
 
-export const { setCurrentTrack, setPlaying, setNextTrack, setPrevTrack } =
-	actions;
+export const {
+	setLike,
+	setCurrentTrack,
+	setPlaying,
+	setNextTrack,
+	setPrevTrack,
+} = actions;
 
 export { reducer as audioReducer };

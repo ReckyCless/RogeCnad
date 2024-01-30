@@ -5,7 +5,7 @@ function Logo() {
 	return (
 		<Link to='/' style={{ display: 'flex', alignItems: 'center' }}>
 			<img
-				src='../../../../src/assets/LOGO.svg'
+				src='/LOGO.svg'
 				alt=''
 				style={{ width: 60, height: 60, paddingRight: 10 }}
 			/>
