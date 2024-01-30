@@ -8,6 +8,7 @@ import { CustomInput } from '../../shared/inputs/custom-input/custom-input.jsx';
 import { usePostAlbumByIdMutation } from '../../store/actions/music/music.js';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import secondsToMMSS from '../../utils/secondsToMMSS.js';
 
 export function AlbumPage() {
 	const { albumID } = useParams();
@@ -21,6 +22,10 @@ export function AlbumPage() {
 			playlistID: albumID,
 		});
 	}, []);
+
+	useEffect(() => {
+		console.log(data);
+	}, [data, isSuccess]);
 
 	if (isLoading || !data) return <div>Loading... :C</div>;
 
@@ -246,9 +251,9 @@ export function AlbumPage() {
 							''
 						)}
 						{data.trackList &&
-							data.trackList.map((track) => (
+							data.trackList.map((track, index) => (
 								<div
-									key={track.trackID}
+									key={track.id}
 									className='album-page_body-table_body-track'
 								>
 									<div
@@ -259,7 +264,7 @@ export function AlbumPage() {
 										}}
 										className='album-page_body-table-first'
 									>
-										{track.trackID}
+										{index + 1}
 									</div>
 									<div
 										style={{
@@ -271,7 +276,7 @@ export function AlbumPage() {
 										className='album-page_body-table-second'
 									>
 										<img
-											src={track.image}
+											src={track.trackCoverBytes}
 											style={{
 												height: 50,
 												width: 50,
@@ -292,7 +297,7 @@ export function AlbumPage() {
 													display: 'flex',
 												}}
 											>
-												{track.title}
+												{track.trackName}
 											</Typography>
 											<Typography
 												variant='body2'
@@ -302,7 +307,7 @@ export function AlbumPage() {
 													display: 'flex',
 												}}
 											>
-												{track.author}
+												{track.uploaderName}
 											</Typography>
 										</div>
 									</div>
@@ -314,7 +319,7 @@ export function AlbumPage() {
 										}}
 										className='album-page_body-table-third'
 									>
-										{track.listeners}
+										{track.listeners || 9999}
 									</div>
 									<div
 										style={{
@@ -346,7 +351,7 @@ export function AlbumPage() {
 										}}
 										className='album-page_body-table-fifth'
 									>
-										{track.duration}
+										{secondsToMMSS(track.duration)}
 									</div>
 								</div>
 							))}
